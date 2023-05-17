@@ -31,7 +31,7 @@ import HomeRecommendView from './childComponents/HomeRecommendView.vue'
 import FeatureView from './childComponents/FeatureView.vue'
 
 import {getHomeMultidata,getHomeGoods} from "network/home.js"
-
+import {debounce} from 'components/common/utils.js'
 
 export default {
     name:"home",
@@ -50,11 +50,11 @@ export default {
         banners:[],
         recommends:[],
         goods:{
-          'pop':{page:0,list:[]},
           'new':{page:0,list:[]},
+          'pop':{page:0,list:[]},
           'sell':{page:0,list:[]}
         },
-        currentType:'pop',
+        currentType:'new',
         isShowBackTop:false
       }
     },
@@ -62,14 +62,14 @@ export default {
         // 1.请求多个数据
         this.getHomeMultidata(),
         // 2.请求商品数据
-        this.getHomeGoods('pop')
         this.getHomeGoods('new')
+        this.getHomeGoods('pop')
         this.getHomeGoods('sell')
     },
     mounted(){
+          const refresh=debounce(this.$refs.scroll.refresh,500)
           this.$bus.$on("itemImageLoad",()=>{
-          console.log('jiazai');
-          this.$refs.scroll.refresh()
+            refresh()
         })
     },
 
@@ -83,10 +83,10 @@ export default {
       tabClick(index){
         switch(index){
           case 0:
-            this.currentType='pop'
+            this.currentType='new'
             break
           case 1:
-            this.currentType='new'
+            this.currentType='pop'
             break
           case 2:
             this.currentType='sell'
@@ -117,6 +117,9 @@ export default {
         getHomeGoods(type,page).then(res=>{
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page+=1
+
+          //完成上拉加载更多
+          this.$refs.scroll.finishPullUp()
       })
       }
     }
