@@ -25,12 +25,14 @@ export default {
 }
 </script>
 
-<style>
-    .goods{
+<style scoped>
+    .goods {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
-        padding: 2px;
+        background-color: #eee;
+        padding: 10px 0;
     }
+
 
 </style>

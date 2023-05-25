@@ -20,13 +20,21 @@ export default {
       }
     }
   },
+  data(){
+    return{
+      isLoad:false
+    }
+  },
   components:{
     Swiper,
     SwiperItem
   },
   methods:{
     imgLoad(){
-      this.$emit('swiperImageLoad')
+      if(!this.isLoad){
+        this.$emit('swiperImageLoad')
+        this.isLoad=true
+      }
     }
   }
 }
